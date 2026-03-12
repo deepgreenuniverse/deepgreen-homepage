@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepGreen宇宙科技</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 24px 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+        }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .date-display {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .category-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+        .category-btn {
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+        }
+        .category-btn:hover {
+            transform: scale(1.08);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        .category-btn.active {
+            background: rgba(255, 255, 255, 0.35);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            transform: scale(1.05);
+        }
+        .result-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 32px 24px;
+            margin-bottom: 24px;
+            min-height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .result-box p {
+            font-size: 22px;
+            color: white;
+            text-align: center;
+            line-height: 1.6;
+            margin: 0;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 8px;
+        }
+        .action-btn {
+            padding: 14px 28px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+        }
+        .action-btn:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+        .toast {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            padding: 14px 28px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            color: white;
+            font-size: 15px;
+            font-weight: 500;
+            text-align: center;
+            z-index: 9999;
+            animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        @media (max-width: 640px) {
+            body {
+                padding: 16px 12px;
+            }
+            h1 {
+                font-size: 28px;
+                margin-bottom: 10px;
+            }
+            .date-display {
+                font-size: 13px;
+            }
+            .category-btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+            .result-box {
+                padding: 24px 20px;
+                min-height: 120px;
+            }
+            .result-box p {
+                font-size: 18px;
+            }
+            .action-btn {
+                padding: 12px 24px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ 每日一句</h1>
+        <div class="date-display" id="dateDisplay"></div>
+        
+        <div class="category-buttons">
+            <button class="category-btn active" data-category="motivational" onclick="getSentence('motivational')">💪 励志</button>
+            <button class="category-btn" data-category="humorous" onclick="getSentence('humorous')">😄 幽默</button>
+            <button class="category-btn" data-category="philosophical" onclick="getSentence('philosophical')">🤔 哲理</button>
+            <button class="category-btn" data-category="romantic" onclick="getSentence('romantic')">❤️ 情话</button>
+            <button class="category-btn" data-category="lucky" onclick="getSentence('lucky')">🍀 吉日</button>
+        </div>
+        
+        <div class="result-box">
+            <p id="sentence">点击按钮获取每日一句...</p>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="action-btn" onclick="refreshSentence()">🔄 刷新</button>
+            <button class="action-btn" onclick="copySentence()">📋 复制</button>
+            <button class="action-btn" onclick="shareSentence()">📤 分享</button>
+        </div>
+    </div>
+
+<script>
+    function getCurrentDate() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth() + 1;
+        const day = now.getDate();
+        const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+        const weekday = weekdays[now.getDay()];
+        const daysInMonth = new Date(year, month, 0).getDate();
+        const weekNumber = Math.ceil((day + now.getDay()) / 7);
+        const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        const totalDays = isLeapYear ? 366 : 365;
+        const dayOfYear = Math.floor((new Date(year, month, day) - new Date(year, 1, 1)) / 86400000) + 1;
+        return `${year}年${month}月${day}日 ${weekday} | 第${weekNumber}周 | 第${dayOfYear}天`;
+    }
+    
+    document.getElementById('dateDisplay').textContent = getCurrentDate();
+    
+    const sentences = {
+        motivational: [
+            '每一次努力都是幸运的起点', '相信自己的力量，你能做到的', '阳光总在风雨后',
+            '今天就是最好的开始', '你的潜力远超你的想象', '坚持下去，就会看到曙光',
+            '每一步都通向更好的自己', '成功不是终点，而是新的起点', '不要停下，未来在等你',
+            '你的坚持，终将照亮前路', '相信过程，结果自然美好', '努力不会被辜负，时间会证明',
+            '今天的付出，是为了明天的收获', '不要等待机会，要创造机会', '每个努力，都算数',
+            '你的梦想，值得你为之奋斗', '别让今天成为遗憾的一天', '每天进步一点点，一年前进一大步',
+            '相信自己，你比想象中更强大', '困难是成长的阶梯', '坚持下去，就会看到曙光',
+            '今天的汗水，是明天的基石', '不要害怕开始，开始就是成功', '每一步都算数',
+            '你的努力，时间都看在眼里', '相信自己，你已经很优秀了', '不要等到准备完美才行动',
+            '行动是对抗焦虑最好的方式', '今天的坚持，是为了明天的自由', '每一步都通向更好的自己',
+            '成功不是终点，失败不是末日', '时间会治愈一切，路要一步步走',
+            '真正的强大是知道自己的弱点', '每个选择都是新的开始', '不要等到完美，开始就是进步',
+            '焦虑不能解决问题，行动可以', '生活不会总是一帆风顺', '真正的勇气是带着恐惧前行',
+            '今天的选择，决定明天的方向', '你比你想象的更强大', '坚持到底，就是胜利',
+            '不要怕慢，只要在路上', '每天进步一点点', '成功需要时间，也需要坚持',
+            '今天的努力，不会白费', '相信过程，享受过程', '你的坚持，是最宝贵的财富',
+            '每一步都重要，每一天都珍贵', '不要停下，继续前行', '今天做的，为了明天更好的自己',
+            '你离目标，只有一步之遥', '坚持就是胜利，放弃才是失败', '相信明天会更好',
+            '今天的你，比昨天的你更优秀', '生活给你关上了一扇门', '推开它，走向光明',
+            '不要停下，未来在等你', '每个努力，都算数', '你的潜力，远超你的想象',
+            '坚持下去，就会看到曙光', '今天的付出，是为了明天的收获', '不要等待机会，要创造机会',
+            '努力不会被辜负，时间会证明', '成功不是终点，而是新的起点', '相信过程，结果自然美好',
+            '不要让今天成为遗憾的一天', '每天进步一点点，一年前进一大步', '相信自己，你比想象中更强大',
+            '困难是成长的阶梯', '坚持下去，就会看到曙光', '不要害怕开始，开始就是成功',
+            '今天的汗水，是明天的基石', '每一步都算数', '你的努力，时间都看在眼里',
+            '相信自己，你已经很优秀了', '不要等到准备完美才行动', '行动是对抗焦虑最好的方式',
+            '今天的坚持，是为了明天的自由', '每一步都通向更好的自己', '成功不是终点，失败不是末日',
+            '时间会治愈一切，路要一步步走', '真正的强大是知道自己的弱点', '每个选择都是新的开始',
+            '不要等到完美，开始就是进步', '焦虑不能解决问题，行动可以', '生活不会总是一帆风顺',
+            '真正的勇气是带着恐惧前行', '今天的选择，决定明天的方向', '你比你想象的更强大',
+            '坚持到底，就是胜利', '不要怕慢，只要在路上', '每天进步一点点', '成功需要时间，也需要坚持',
+            '今天的努力，不会白费', '相信过程，享受过程', '你的坚持，是最宝贵的财富',
+            '每一步都重要，每一天都珍贵', '不要停下，继续前行', '今天做的，为了明天更好的自己',
+            '你离目标，只有一步之遥', '坚持就是胜利，放弃才是失败', '相信明天会更好',
+            '今天的你，比昨天的你更优秀', '生活给你关上了一扇门', '推开它，走向光明'
+        ],
+        humorous: [
+            '生活就像编程，偶尔需要debug', '我的发际线是早睡早起', '减肥从明天开始',
+            '别问我为什么这么瘦，问问我为什么这么秃', '程序员的一天，改bug改bug改bug',
+            '人生苦短，我选择Python', '钱没了可以再赚，头发没了就没了',
+            '每天早睡，除了发文章的时候', '键盘敲得响，代码写得像诗，但运行全是错',
+            '我的代码没有bug，是编译器不懂我', '为什么bug总在最后一行出现',
+            '程序员不谈恋爱，因为找不到那个对象', '我以为是bug，结果是我菜',
+            '程序员最讨厌的两件事：写文档和别人的代码', '我的代码是艺术品，运行起来是废品',
+            '生活不是等待一场暴风雨过去', '我太爱我的bug了，它从不说谎',
+            '修电脑最快的方法：重启，修人生最快的方法：睡觉', '不要问我为什么，我也不知道',
+            '程序员的三种状态：看不懂、看懂、装懂', '我的梦想：全栈无错',
+            '每天告诉自己：明天开始', '今天不写bug，明天没压力', '头发和金钱，至少要有一个',
+            '程序员的钱都去哪了？换新服务器了', '我以为我知道，原来我不知道',
+            '写代码就像盖房子，总感觉地基不稳', '我的代码很优雅，编译器说要报错',
+            '生活就是一个try-catch，finally里还是单身', '别慌，重启试试',
+            '修bug的过程，就是不断告诉自己为什么', '为什么我的bug这么顽固',
+            '程序员最怕的一句话：在我的机器上能运行', '代码写得好，就是跑不起来',
+            '我以为是feature，原来是bug', '每天告诉自己：只是还没到最简单的方案',
+            '生活不会总是一帆风顺，偶尔也要ctrl+z', '我的头发和收入成反比',
+            '程序员的时间都去哪了？修bug', '今天不加班，明天继续',
+            '修bug时的心情：从愤怒到无奈再到接受', '我以为很简单，结果我太天真',
+            '为什么bug复现了？因为我没记笔记', '生活就是一个while true',
+            '不要问我为什么，问编译器去', '程序员最大的谎言：只差最后一道工序'
+        ],
+        philosophical: [
+            '成功不是终点，失败不是末日', '时间会治愈一切', '路要一步步走',
+            '真正的强大是知道自己的弱点', '每个选择都是新的开始', '不要等到完美，开始就是进步',
+            '焦虑不能解决问题，行动可以', '生活不会总是一帆风顺', '真正的勇气是带着恐惧前行',
+            '今天的选择，决定明天的方向', '你比你想象的更强大', '坚持到底，就是胜利',
+            '不要怕慢，只要在路上', '每天进步一点点', '成功需要时间，也需要坚持',
+            '今天的努力，不会白费', '相信过程，享受过程', '你的坚持，是最宝贵的财富',
+            '每一步都重要，每一天都珍贵', '不要停下，继续前行', '今天做的，为了明天更好的自己',
+            '你离目标，只有一步之遥', '坚持就是胜利，放弃才是失败', '相信明天会更好',
+            '今天的你，比昨天的你更优秀', '生活给你关上了一扇门', '推开它，走向光明',
+            '真正的自由，是做自己的主人', '重要的不是你在哪，而是你要去哪',
+            '所谓运气，只是恰逢其时的努力', '过去已逝，未来未到，珍惜当下',
+            '改变的不是世界，而是看待世界的眼睛', '每个不曾放弃的瞬间，都值得被铭记',
+            '让梦想成为现实的唯一方式就是行动', '今天的汗水，就是明天的收获',
+            '不要把时间浪费在后悔上', '你的梦想比你想象的更大',
+            '真正的成长，是在不舒服中继续前行', '生活不是等待，而是创造',
+            '每个决定，都在塑造你的未来', '不要等到准备好了才出发',
+            '行动比完美更重要', '真正的自信，是相信过程',
+            '困难不会永远存在，但你的勇气可以', '今天的选择，就是明天的故事',
+            '不要害怕重新开始', '你的潜力，远超你的想象',
+            '真正的坚持，是在没有掌声时继续前行', '成功不是终点，而是每一步',
+            '不要停下，因为你不知道下一步会是什么', '今天的努力，都是对未来的投资',
+            '真正的强大，是承认自己的不足', '生活给你挑战，是为了让你成长',
+            '每个经历，都在塑造独一无二的你', '不要害怕困难，它是成长的阶梯',
+            '今天的坚持，是为了明天更好的自己', '真正的勇气，是不完美地继续前行',
+            '不要等到一切都准备好了', '行动是对抗焦虑最好的方式',
+            '你的努力，时间都看在眼里', '成功不是终点，失败不是末日',
+            '时间会治愈一切，路要一步步走', '真正的强大是知道自己的弱点'
+        ],
+        romantic: [
+            '你是我最美丽的遇见', '有你的每一天都闪闪发光', '爱的陪伴是最长情的告白',
+            '遇见你是我最大的幸运', '想和你一起看四季更替', '你在身边，就是最好的时光',
+            '温柔是人间宝藏', '你是我书里最美好的句子', '遇见你之前，我的世界是黑白的',
+            '你不用多说什么，我懂就好', '有你在的每一天，都是情人节',
+            '你是我的星光，照亮我前行的路', '每个清晨想到你，都是幸福的开始',
+            '想和你一起看日落，直到地老天荒', '你是我书里最美好的句子',
+            '遇见你，是我生命中最美好的意外', '有你在的每一天，都是情人节',
+            '温柔是人间宝藏，你是我书里最美好的句子', '你不用多说什么，我懂就好',
+            '你是我的星光，照亮我前行的路', '每个清晨想到你，都是幸福的开始',
+            '想和你一起看日落，直到地老天荒', '遇见你，是我生命中最美好的意外',
+            '你是我书里最美好的句子', '遇见你之前，我的世界是黑白的',
+            '有你在的每一天，都是情人节', '温柔是人间宝藏',
+            '你是我书里最美好的句子', '遇见你之前，我的世界是黑白的',
+            '你是我的星光，照亮我前行的路', '每个清晨想到你，都是幸福的开始',
+            '想和你一起看日落，直到地老天荒', '你是我书里最美好的句子',
+            '遇见你，是我生命中最美好的意外', '有你在的每一天，都是情人节',
+            '温柔是人间宝藏', '你是我书里最美好的句子', '遇见你之前，我的世界是黑白的',
+            '你不用多说什么，我懂就好', '你是我的星光，照亮我前行的路',
+            '每个清晨想到你，都是幸福的开始', '想和你一起看日落，直到地老天荒',
+            '你是我的书里最美好的句子', '遇见你，是我生命中最美好的意外',
+            '有你在的每一天，都是情人节', '温柔是人间宝藏',
+            '你是我书里最美好的句子', '遇见你之前，我的世界是黑白的'
+        ],
+        lucky: [
+            '今日宜进取，贵人相助，心想事成', '福星高照，财源广进，事业顺遂',
+            '今日宜静养修身，闭门修炼，增长智慧', '白驹过隙，岁月静好，平安喜乐',
+            '今日宜广结善缘，结识新朋，拓展人脉', '紫气东来，贵人扶持，事业亨通',
+            '今日宜谨慎行事，三思后行，避免冲突', '吉星照命，诸事顺遂，心想事成',
+            '今日宜积极进取，把握机遇，努力拼搏', '日丽中天，金光普照，财源广进',
+            '今日宜保持耐心，等待时机，稳中求进', '月朗风清，星吉月明，前程似锦',
+            '今日宜深思熟虑，规划未来，稳步前进', '吉日良辰，天时地利，事事顺心',
+            '今日宜主动出击，把握机会，展现自我', '喜鹊登枝，好运连连，事业兴旺',
+            '今日宜脚踏实地，认真工作，积累经验', '祥云瑞气，贵人指点，学业有成',
+            '今日宜调整心态，积极乐观，拥抱变化', '吉星高照，祥云瑞气，福禄双全',
+            '今日宜大胆尝试，挑战自我，突破舒适区', '紫气东来，时来运转，事业兴隆',
+            '今日宜专注目标，心无旁骛，全神贯注', '日丽中天，福星高照，事业顺遂'
+        ]
+    };
+    
+    const shownSentences = {
+        motivational: new Set(),
+        humorous: new Set(),
+        philosophical: new Set(),
+        romantic: new Set(),
+        lucky: new Set()
+    };
+    
+    let currentCategory = 'motivational';
+    let currentSentence = '';
+    
+    function getRandomUniqueSentence(category, categorySentences, shownSet) {
+        const available = categorySentences.filter(s => !shownSet.has(s));
+        
+        if (available.length === 0) {
+            shownSet.clear();
+            shownSentences[category] = new Set();
+            available.push(...categorySentences);
+        }
+        
+        const randomIndex = Math.floor(Math.random() * available.length);
+        const selected = available[randomIndex];
+        
+        shownSet.add(selected);
+        shownSentences[category] = shownSet;
+        
+        return selected;
+    }
+    
+    function getSentence(category) {
+        updateCategoryUI(category);
+        currentCategory = category;
+        
+        const sentence = getRandomUniqueSentence(
+            category, 
+            sentences[category], 
+            shownSentences[category]
+        );
+        
+        displaySentence(sentence);
+        currentSentence = sentence;
+    }
+    
+    function refreshSentence() {
+        const sentence = getRandomUniqueSentence(
+            currentCategory, 
+            sentences[currentCategory], 
+            shownSentences[currentCategory]
+        );
+        
+        displaySentence(sentence);
+        currentSentence = sentence;
+    }
+    
+    function displaySentence(sentence) {
+        const sentenceEl = document.getElementById('sentence');
+        sentenceEl.style.opacity = '0';
+        sentenceEl.style.transform = 'translateY(10px)';
+        
+        setTimeout(function() {
+            sentenceEl.textContent = sentence;
+            sentenceEl.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            sentenceEl.style.opacity = '1';
+            sentenceEl.style.transform = 'translateY(0)';
+        }, 50);
+    }
+    
+    function updateCategoryUI(category) {
+        const buttons = document.querySelectorAll('.category-btn');
+        buttons.forEach(function(btn) {
+            if (btn.dataset.category === category) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+    
+    function copySentence() {
+        if (navigator.clipboard && currentSentence) {
+            navigator.clipboard.writeText(currentSentence).then(function() {
+                showToast('已复制到剪贴板 ✅');
+            });
+        } else {
+            showToast('复制失败，请手动复制');
+        }
+    }
+    
+    function shareSentence() {
+        if (!currentSentence) return;
+        
+        const shareText = currentSentence + '\n—— 来自「每日一句」DeepGreen宇宙科技';
+        if (navigator.share) {
+            navigator.share({ title: '每日一句', text: shareText });
+        } else {
+            copySentence();
+            showToast('已复制，可以分享给朋友了 ✅');
+        }
+    }
+    
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.textContent = message;
+        toast.className = 'toast';
+        document.body.appendChild(toast);
+        
+        setTimeout(function() {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(-50%) translateY(-100px)';
+            toast.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            setTimeout(function() { toast.remove(); }, 300);
+        }, 2000);
+    }
+    
+    getSentence('motivational');
+</script>
+</body>
+</html>
