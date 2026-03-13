@@ -319,20 +319,45 @@
             
             <h2 style="text-align: center; color: white; font-size: 24px; font-weight: 700; margin-bottom: 24px;">🎨 今日幸运色</h2>
             
-            <select id="lucky-zodiac" class="zodiac-select" onchange="getLuckyInfo()">
-                <option value="白羊座">♈ 白羊座</option>
-                <option value="金牛座">♉ 金牛座</option>
-                <option value="双子座">♊ 双子座</option>
-                <option value="巨蟹座">♋ 巨蟹座</option>
-                <option value="狮子座">♌ 狮子座</option>
-                <option value="处女座">♍ 处女座</option>
-                <option value="天秤座">♎ 天秤座</option>
-                <option value="天蝎座">♏ 天蝎座</option>
-                <option value="射手座">♐ 射手座</option>
-                <option value="魔羯座">♑ 魔羯座</option>
-                <option value="水瓶座">♒ 水瓶座</option>
-                <option value="双鱼座">♓ 双鱼座</option>
-            </select>
+            <!-- 12个星座直接点击交互 -->
+            <div class="zodiac-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 24px;">
+                <div class="zodiac-item" onclick="getLuckyInfo('白羊座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♈ 白羊座</div>
+                </div>
+                <div class="zodiac-item" onclick="getLuckyInfo('金牛座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♉ 金牛座</div>
+                </div>
+                <div class="zodiac-item" onclick="getLuckyInfo('双子座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♊ 双子座</div>
+                </div>
+                <div class="zodiac-item" onclick="getLuckyInfo('巨蟹座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♋ 巨蟹座</div>
+                </div>
+                <div class="zodiac-item" onclick="getLuckyInfo('狮子座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♌ 狮子座</div>
+                </div>
+                <div class="zodiac-item" onclick="getLuckyInfo('处女座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♍ 处女座</div>
+                </div>
+                <div class="zodiac-item" onclick="getLuckyInfo('天秤座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♎ 天秤座</div>
+                </div>
+                <div class="zodiac-item" onclick="getLuckyInfo('天蝎座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♏ 天蝎座</div>
+                </div>
+                <div class="zodiac-item" onclick="getLuckyInfo('射手座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♐ 射手座</div>
+                </div>
+                <div class="zodiac-item" onclick="getLuckyInfo('摩羯座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♑ 摩羯座</div>
+                </div>
+                <div class="zodiac-item" onclick="getLuckyInfo('水瓶座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♒ 水瓶座</div>
+                </div>
+                <div class="zodiac-item" onclick="getLuckyInfo('双鱼座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♓ 双鱼座</div>
+                </div>
+            </div>
             
             <div id="lucky-result" style="display: none;">
                 <!-- 幸运色 -->
@@ -378,20 +403,45 @@
             
             <h2 style="text-align: center; color: white; font-size: 24px; font-weight: 700; margin-bottom: 24px;">⭐ 今日运势</h2>
             
-            <select id="fortune-zodiac" class="zodiac-select" onchange="getFortune()">
-                <option value="白羊座">♈ 白羊座</option>
-                <option value="金牛座">♉ 金牛座</option>
-                <option value="双子座">♊ 双子座</option>
-                <option value="巨蟹座">♋ 巨蟹座</option>
-                <option value="狮子座">♌ 狮子座</option>
-                <option value="处女座">♍ 处女座</option>
-                <option value="天秤座">♎ 天秤座</option>
-                <option value="天蝎座">♏ 天蝎座</option>
-                <option value="射手座">♐ 射手座</option>
-                <option value="魔羯座">♑ 魔羯座</option>
-                <option value="水瓶座">♒ 水瓶座</option>
-                <option value="双鱼座">♓ 双鱼座</option>
-            </select>
+            <!-- 12个星座直接点击交互 -->
+            <div class="zodiac-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 24px;">
+                <div class="zodiac-item" onclick="getFortune('白羊座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♈ 白羊座</div>
+                </div>
+                <div class="zodiac-item" onclick="getFortune('金牛座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♉ 金牛座</div>
+                </div>
+                <div class="zodiac-item" onclick="getFortune('双子座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♊ 双子座</div>
+                </div>
+                <div class="zodiac-item" onclick="getFortune('巨蟹座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♋ 巨蟹座</div>
+                </div>
+                <div class="zodiac-item" onclick="getFortune('狮子座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♌ 狮子座</div>
+                </div>
+                <div class="zodiac-item" onclick="getFortune('处女座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♍ 处女座</div>
+                </div>
+                <div class="zodiac-item" onclick="getFortune('天秤座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♎ 天秤座</div>
+                </div>
+                <div class="zodiac-item" onclick="getFortune('天蝎座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♏ 天蝎座</div>
+                </div>
+                <div class="zodiac-item" onclick="getFortune('射手座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♐ 射手座</div>
+                </div>
+                <div class="zodiac-item" onclick="getFortune('摩羯座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♑ 摩羯座</div>
+                </div>
+                <div class="zodiac-item" onclick="getFortune('水瓶座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♒ 水瓶座</div>
+                </div>
+                <div class="zodiac-item" onclick="getFortune('双鱼座')" style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                    <div style="font-size: 18px;">♓ 双鱼座</div>
+                </div>
+            </div>
             
             <div id="fortune-result" style="display: none;">
                 <!-- 星级评分 -->
@@ -497,6 +547,8 @@
             const sectionEl = document.getElementById('section-' + section);
             if (sectionEl) {
                 sectionEl.classList.add('active');
+            } else {
+                console.error('Section not found:', 'section-' + section);
             }
         }
     }
@@ -710,18 +762,32 @@
     
     let currentLuckyInfo = null;
     
-    function getLuckyInfo() {
-        const zodiac = document.getElementById('lucky-zodiac').value;
+    function getLuckyInfo(zodiac) {
         document.getElementById('lucky-result').style.display = 'none';
         document.getElementById('lucky-loading').style.display = 'block';
         
-        setTimeout(function() {
-            const luckyInfo = generateLuckyInfo(zodiac);
+        // 调用真实的API获取数据
+        fetchLuckyInfo(zodiac).then(function(luckyInfo) {
             displayLuckyInfo(luckyInfo);
             currentLuckyInfo = luckyInfo;
             document.getElementById('lucky-loading').style.display = 'none';
             document.getElementById('lucky-result').style.display = 'block';
-        }, 1000);
+        }).catch(function(error) {
+            console.error('获取幸运色信息失败:', error);
+            showToast('获取幸运色信息失败，请稍后重试');
+            document.getElementById('lucky-loading').style.display = 'none';
+        });
+    }
+    
+    function fetchLuckyInfo(zodiac) {
+        return new Promise(function(resolve, reject) {
+            // 这里应该调用真实的API
+            // 目前先使用模拟数据，稍后替换为真实API调用
+            const luckyInfo = generateLuckyInfo(zodiac);
+            setTimeout(function() {
+                resolve(luckyInfo);
+            }, 500);
+        });
     }
     
     function generateLuckyInfo(zodiac) {
@@ -793,18 +859,32 @@
     
     let currentFortune = null;
     
-    function getFortune() {
-        const zodiac = document.getElementById('fortune-zodiac').value;
+    function getFortune(zodiac) {
         document.getElementById('fortune-result').style.display = 'none';
         document.getElementById('fortune-loading').style.display = 'block';
         
-        setTimeout(function() {
-            const fortune = generateFortune(zodiac);
+        // 调用真实的API获取数据
+        fetchFortune(zodiac).then(function(fortune) {
             displayFortune(fortune);
             currentFortune = fortune;
             document.getElementById('fortune-loading').style.display = 'none';
             document.getElementById('fortune-result').style.display = 'block';
-        }, 1000);
+        }).catch(function(error) {
+            console.error('获取今日运势失败:', error);
+            showToast('获取今日运势失败，请稍后重试');
+            document.getElementById('fortune-loading').style.display = 'none';
+        });
+    }
+    
+    function fetchFortune(zodiac) {
+        return new Promise(function(resolve, reject) {
+            // 这里应该调用真实的API
+            // 目前先使用模拟数据，稍后替换为真实API调用
+            const fortune = generateFortune(zodiac);
+            setTimeout(function() {
+                resolve(fortune);
+            }, 500);
+        });
     }
     
     function generateFortune(zodiac) {
