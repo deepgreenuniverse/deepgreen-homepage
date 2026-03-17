@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
 <!-- 引入云开发Web SDK -->
 <script src="https://res.wx.qq.com/open/js/cloudbase/1.7.1/cloud.js"></script>
+<!-- 引入html2canvas用于生成海报 -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -330,6 +332,7 @@
                 <button class="action-btn" onclick="refreshDailySentence()">🔄刷新</button>
                 <button class="action-btn" onclick="copyDailySentence()">📋复制</button>
                 <button class="action-btn" onclick="shareDailySentence()">📤分享</button>
+                <button class="action-btn" onclick="openPosterModal(currentDailySentence)">🖼️生成海报</button>
             </div>
         </div>
         
@@ -556,6 +559,7 @@
                 <button class="action-btn" onclick="refreshHappiness()">🔄刷新</button>
                 <button class="action-btn" onclick="copyHappiness()">📋复制</button>
                 <button class="action-btn" onclick="shareHappiness()">📤分享</button>
+                <button class="action-btn" onclick="openPosterModal(currentHappiness)">🖼️生成海报</button>
             </div>
         </div>
         
@@ -580,6 +584,24 @@
                 <button class="action-btn" onclick="refreshBless()">🔄刷新</button>
                 <button class="action-btn" onclick="copyBless()">📋复制</button>
                 <button class="action-btn" onclick="shareBless()">📤分享</button>
+                <button class="action-btn" onclick="openPosterModal(currentBless)">🖼️生成海报</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 海报生成弹窗 -->
+    <div id="posterModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 99999; padding: 20px; box-sizing: border-box;">
+        <div style="max-width: 350px; margin: 50px auto 0;">
+            <div id="posterContainer" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 24px; border-radius: 24px; margin-bottom: 20px;">
+                <div style="min-height: 300px; display: flex; align-items: center; justify-content: center;">
+                    <p id="posterText" style="font-size: 22px; color: white; text-align: center; line-height: 1.8; font-weight: 600;">你要偷偷努力，然后惊艳所有人</p>
+                </div>
+                <div style="text-align: center; margin-top: 40px; opacity: 0.7; color: white; font-size: 14px;">DeepGreen宇宙科技</div>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button class="action-btn" onclick="changePosterBg()">换背景</button>
+                <button class="action-btn" onclick="downloadPoster()">保存图片</button>
+                <button class="action-btn" onclick="closePosterModal()">关闭</button>
             </div>
         </div>
     </div>
@@ -1252,6 +1274,62 @@
     
     let currentHappinessCategory = 'life';
     let currentHappiness = '';
+
+    // 海报生成相关
+    const POSTER_BG_COLORS = [
+        { main: '#667eea', light: '#764ba2' }, // 紫蓝渐变
+        { main: '#f093fb', light: '#f5576c' }, // 粉橙渐变
+        { main: '#4facfe', light: '#00f2fe' }, // 蓝青渐变
+        { main: '#43e97b', light: '#38f9d7' }, // 绿青渐变
+        { main: '#fa709a', light: '#fee140' }, // 粉黄渐变
+        { main: '#30cfd0', light: '#330867' }, // 蓝紫渐变
+        { main: '#a8edea', light: '#fed6e3' }, // 淡粉渐变
+        { main: '#ffecd2', light: '#fcb69f' }  // 橙粉渐变
+    ];
+    let currentPosterBgIndex = 0;
+    let currentPosterText = '';
+
+    // 打开海报生成弹窗
+    function openPosterModal(text) {
+        currentPosterText = text;
+        document.getElementById('posterText').textContent = text;
+        // 随机背景
+        currentPosterBgIndex = Math.floor(Math.random() * POSTER_BG_COLORS.length);
+        const bg = POSTER_BG_COLORS[currentPosterBgIndex];
+        document.getElementById('posterContainer').style.background = `linear-gradient(135deg, ${bg.main} 0%, ${bg.light} 100%)`;
+        document.getElementById('posterModal').style.display = 'block';
+    }
+
+    // 更换海报背景
+    function changePosterBg() {
+        currentPosterBgIndex = (currentPosterBgIndex + 1) % POSTER_BG_COLORS.length;
+        const bg = POSTER_BG_COLORS[currentPosterBgIndex];
+        document.getElementById('posterContainer').style.background = `linear-gradient(135deg, ${bg.main} 0%, ${bg.light} 100%)`;
+    }
+
+    // 下载海报
+    function downloadPoster() {
+        const posterEl = document.getElementById('posterContainer');
+        html2canvas(posterEl, {
+            useCORS: true,
+            scale: 2,
+            backgroundColor: null
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `DeepGreen海报_${new Date().getTime()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            showToast('海报已保存 ✅');
+        }).catch(error => {
+            console.error('生成海报失败:', error);
+            showToast('生成海报失败，请重试');
+        });
+    }
+
+    // 关闭海报弹窗
+    function closePosterModal() {
+        document.getElementById('posterModal').style.display = 'none';
+    }
     
     function getRandomHappiness(category, sentences, shownSet) {
         // 优先使用云数据，没有则用本地数据
