@@ -307,6 +307,11 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- 管理按钮 -->
+            <div style="text-align: center; margin-top: 40px; opacity: 0.7;">
+                <button class="action-btn" onclick="syncAllDataToCloud()" style="font-size: 12px; padding: 6px 12px;">🔄 同步数据到云数据库</button>
+            </div>
         </div>
         
         <!-- 每日一句 section -->
@@ -1458,7 +1463,7 @@
         try {
             app = window.cloudbase.init({
                 env: 'cloud1-2gyunsvp996c4a0f',
-                appSign: 'wxe0bc63c45ad39a98'
+                appId: 'wxe0bc63c45ad39a98'
             });
             // 匿名登录
             await app.auth().anonymousAuthProvider().signIn();
@@ -1470,6 +1475,29 @@
         } catch (error) {
             console.error('云开发初始化失败，使用本地数据兜底:', error);
             cloudDataLoaded = false;
+        }
+    }
+
+    // 手动同步所有数据到云数据库
+    async function syncAllDataToCloud() {
+        if (!cloudDataLoaded || !db) {
+            showToast('云开发初始化失败，请先刷新页面重试');
+            return;
+        }
+        showToast('开始同步数据...');
+        try {
+            // 同步每日一句
+            await batchInsertData('daily_sentences', dailySentences);
+            // 同步小确幸
+            await batchInsertData('happiness', happinessSentences);
+            // 同步祝福卡
+            await batchInsertData('bless_cards', blessCards);
+            showToast('所有数据同步完成 ✅');
+            // 重新加载云数据
+            await preloadCloudData();
+        } catch (error) {
+            console.error('数据同步失败:', error);
+            showToast('数据同步失败，请检查权限配置');
         }
     }
 
