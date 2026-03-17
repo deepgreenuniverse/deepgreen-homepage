@@ -610,7 +610,6 @@
     // ========== 通用函数 ==========
     
     // 显示提示
-    function showToast(message) {
         const toast = document.createElement('div');
         toast.textContent = message;
         toast.className = 'toast';
@@ -838,11 +837,7 @@
     
     function copyDailySentence() {
         if (navigator.clipboard && currentDailySentence) {
-            navigator.clipboard.writeText(currentDailySentence).then(function() {
-                showToast('已复制到剪贴板 ✅');
-            });
-        } else {
-            showToast('复制失败，请手动复制');
+            navigator.clipboard.writeText(currentDailySentence);
         }
     }
     
@@ -853,7 +848,6 @@
             navigator.share({ title: '每日一句', text: shareText });
         } else {
             copyDailySentence();
-            showToast('已复制，可以分享给朋友了 ✅');
         }
     }
     
@@ -894,7 +888,6 @@
             document.getElementById('lucky-result').style.display = 'block';
         }).catch(function(error) {
             console.error('获取幸运色信息失败:', error);
-            showToast('获取幸运色信息失败，请稍后重试');
             document.getElementById('lucky-loading').style.display = 'none';
         });
     }
@@ -985,7 +978,6 @@
             navigator.share({ title: `${currentLuckyInfo.zodiac}今日幸运色`, text: shareText });
         } else {
             copyLuckyInfo();
-            showToast('已复制，可以分享给朋友了 ✅');
         }
     }
     
@@ -994,10 +986,8 @@
         const copyText = `✨ ${currentLuckyInfo.zodiac}今日幸运色 ✨\n🎨 ${currentLuckyInfo.color.name}\n🔢 幸运数字：${currentLuckyInfo.number}\n🧭 幸运方位：${currentLuckyInfo.direction}\n💡 穿搭建议：${currentLuckyInfo.advice}`;
         if (navigator.clipboard) {
             navigator.clipboard.writeText(copyText).then(function() {
-                showToast('已复制到剪贴板 ✅');
             });
         } else {
-            showToast('复制失败，请手动复制');
         }
     }
     
@@ -1034,7 +1024,6 @@
             document.getElementById('fortune-result').style.display = 'block';
         }).catch(function(error) {
             console.error('获取今日运势失败:', error);
-            showToast('获取今日运势失败，请稍后重试');
             document.getElementById('fortune-loading').style.display = 'none';
         });
     }
@@ -1110,7 +1099,6 @@
             navigator.share({ title: `${currentFortune.zodiac}今日运势`, text: shareText });
         } else {
             copyFortune();
-            showToast('已复制，可以分享给朋友了 ✅');
         }
     }
     
@@ -1119,10 +1107,8 @@
         const copyText = `✨ ${currentFortune.zodiac}今日运势 ✨\n⭐ 今日运势：${currentFortune.levelName}\n💕 爱情：${currentFortune.love}\n💼 事业：${currentFortune.career}\n💰 财运：${currentFortune.wealth}\n💡 建议：${currentFortune.advice}\n🎨 幸运色：${currentFortune.luckyColor}\n🔢 幸运数字：${currentFortune.luckyNumber}`;
         if (navigator.clipboard) {
             navigator.clipboard.writeText(copyText).then(function() {
-                showToast('已复制到剪贴板 ✅');
             });
         } else {
-            showToast('复制失败，请手动复制');
         }
     }
     
@@ -1346,10 +1332,8 @@
             link.download = `DeepGreen海报_${new Date().getTime()}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
-            showToast('海报已保存 ✅');
         }).catch(error => {
             console.error('生成海报失败:', error);
-            showToast('生成海报失败，请重试');
         });
     }
 
@@ -1411,10 +1395,8 @@
     function copyHappiness() {
         if (navigator.clipboard && currentHappiness) {
             navigator.clipboard.writeText(currentHappiness).then(() => {
-                showToast('已复制到剪贴板 ✅');
             });
         } else {
-            showToast('复制失败，请手动复制');
         }
     }
     
@@ -1425,7 +1407,6 @@
             navigator.share({ title: '每日小确幸', text: shareText });
         } else {
             copyHappiness();
-            showToast('已复制，可以分享给朋友了 ✅');
         }
     }
     
@@ -1536,10 +1517,8 @@
     function copyBless() {
         if (navigator.clipboard && currentBless) {
             navigator.clipboard.writeText(currentBless).then(() => {
-                showToast('已复制到剪贴板 ✅');
             });
         } else {
-            showToast('复制失败，请手动复制');
         }
     }
     
@@ -1550,7 +1529,6 @@
             navigator.share({ title: '祝福卡', text: shareText });
         } else {
             copyBless();
-            showToast('已复制，可以分享给朋友了 ✅');
         }
     }
 
@@ -1581,10 +1559,8 @@
     // 手动同步所有数据到云数据库
     async function syncAllDataToCloud() {
         if (!cloudDataLoaded || !db) {
-            showToast('云开发初始化失败，请先刷新页面重试');
             return;
         }
-        showToast('开始同步数据...');
         try {
             // 同步每日一句
             await batchInsertData('daily_sentences', dailySentences);
@@ -1592,12 +1568,10 @@
             await batchInsertData('happiness', happinessSentences);
             // 同步祝福卡
             await batchInsertData('bless_cards', blessCards);
-            showToast('所有数据同步完成 ✅');
             // 重新加载云数据
             await preloadCloudData();
         } catch (error) {
             console.error('数据同步失败:', error);
-            showToast('数据同步失败，请检查权限配置');
         }
     }
 
@@ -1708,9 +1682,7 @@
                     const res = await db.collection('daily_sentences').limit(1).get();
                     if (res.data.length === 0) {
                         console.log('云数据库为空，自动开始同步数据...');
-                        showToast('正在自动同步数据...');
                         await syncAllDataToCloud();
-                        showToast('数据自动同步完成 ✅');
                     }
                 } catch (error) {
                     console.log('自动同步跳过:', error);
