@@ -286,6 +286,15 @@
                         <p>万年历查询 · 残化版运势</p>
                     </div>
                 </div>
+                
+                <!-- 每日小确幸 -->
+                <div class="product-card" onclick="showSection('dailyHappiness')">
+                    <div class="product-icon">🥰</div>
+                    <div class="product-info">
+                        <h3>每日小确幸</h3>
+                        <p>生活温暖 · 正向鼓励 · 治愈语录</p>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -512,6 +521,30 @@
             
             <div id="almanac-result" class="result-box" style="text-align: left; margin-top: 16px; min-height: 80px;">
                 <p style="color: rgba(255, 255, 255, 0.7); text-align: center;">选择日期查询今日吉日...</p>
+            </div>
+        </div>
+        
+        <!-- 每日小确幸 section -->
+        <div class="section" id="section-dailyHappiness">
+            <a class="back-btn" onclick="showSection('home')">← 返回首页</a>
+            
+            <h2 style="text-align: center; color: white; font-size: 24px; font-weight: 700; margin-bottom: 24px;">🥰 每日小确幸</h2>
+            
+            <div class="category-buttons">
+                <button class="category-btn active" data-category="life" onclick="getDailyHappiness('life')">🏠 生活</button>
+                <button class="category-btn" data-category="work" onclick="getDailyHappiness('work')">💼 职场</button>
+                <button class="category-btn" data-category="heal" onclick="getDailyHappiness('heal')">💛 治愈</button>
+                <button class="category-btn" data-category="bless" onclick="getDailyHappiness('bless')">❤️ 祝福</button>
+            </div>
+            
+            <div class="result-box">
+                <p id="happiness-result">点击按钮获取今日小确幸...</p>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-btn" onclick="refreshHappiness()">🔄刷新</button>
+                <button class="action-btn" onclick="copyHappiness()">📋复制</button>
+                <button class="action-btn" onclick="shareHappiness()">📤分享</button>
             </div>
         </div>
     </div>
@@ -1081,6 +1114,177 @@
         </div>`;
     }
     
+    // ========== 每日小确幸 ==========
+    const happinessSentences = {
+        life: [
+            '今天天气真好，适合出门走走感受阳光',
+            '你今天真好看，保持这份好心情呀',
+            '喝一杯喜欢的奶茶，犒劳一下努力的自己',
+            '路边的小花都开了，今天也会有好事发生',
+            '回家路上记得买份爱吃的小零食',
+            '开窗通通风，新鲜空气会带来好心情',
+            '做一顿自己爱吃的饭，享受属于你的时光',
+            '今天微风不燥，适合出门散散步',
+            '晒晒太阳，整个人都会变得暖暖的',
+            '听听喜欢的歌，烦恼都会被赶跑',
+            '今天的云超好看，记得抬头看看',
+            '吃颗甜甜的糖，今天也是甜甜的一天',
+            '发现一首好听的新歌，今天运气真好',
+            '走在路上被陌生人微笑，好心情加倍',
+            '买到了最后一份想吃的点心，太幸运啦',
+            '家里的小猫蹭了蹭你，治愈所有疲惫',
+            '今天的饭比平时都好吃，太满足了',
+            '发现一部超好看的剧，晚上有的看了',
+            '收到朋友的问候，有人惦记的感觉真好',
+            '今天穿了新衣服，整个人都自信起来'
+        ],
+        work: [
+            '今天工作效率超高，提前完成了任务',
+            '同事帮了你一个小忙，团队氛围超棒',
+            '想到了一个超棒的idea，今天会有收获',
+            '困扰很久的问题今天终于解决了',
+            '领导表扬了你的工作，付出都被看见',
+            '今天不用加班，可以早早回家休息',
+            '和同事配合超默契，工作进展很顺利',
+            '学到了一个新技能，今天又进步了',
+            '会议开得很高效，不用浪费时间',
+            '客户对你的方案很满意，顺利通过',
+            '今天咖啡味道刚好，工作动力十足',
+            '摸鱼的时候没有被发现，小小的快乐',
+            '下午茶超好吃，补充能量继续加油',
+            '工位的阳光很好，工作心情都变好了',
+            '今天写的代码没有bug，太开心了',
+            '出差路上很顺利，没有遇到堵车',
+            '同事分享了好吃的，今天是幸福打工人',
+            '这周任务提前完成，可以好好休息了',
+            '新同事人超好，相处起来很舒服',
+            '今天的方案一次就过了，太顺利啦'
+        ],
+        heal: [
+            '没关系呀，你已经做得很好了',
+            '慢慢来，不用着急，你想要的都会来',
+            '今天不开心也没关系，明天会更好的',
+            '你超棒的，不要否定自己呀',
+            '累了就歇歇，不用硬撑着',
+            '你值得所有美好的事物',
+            '过去的都过去了，未来都是好日子',
+            '好好爱自己，比什么都重要',
+            '每个人都有闪光点，你也一样',
+            '不用和别人比，你已经很优秀了',
+            '所有的困难都是暂时的，都会过去的',
+            '你超级可爱，总会有人偏爱你的',
+            '吃顿好吃的，睡个好觉，什么都好了',
+            '你已经很努力了，给自己点个赞吧',
+            '不管怎么样，我都站在你这边呀',
+            '日子会慢慢好起来的，你也是',
+            '不用害怕犯错，这都是成长的过程',
+            '你不需要完美，真实的你就很好',
+            '难过就哭出来，发泄出来就好了',
+            '你在被很多人爱着呢，要开心呀'
+        ],
+        bless: [
+            '祝你今天一天都顺顺利利，没有烦恼',
+            '希望你今天所有的期待都能实现',
+            '愿你每天都有好心情，事事顺心',
+            '祝你今天遇到的都是好人好事',
+            '愿你的努力都有回报，梦想都能实现',
+            '祝你今天吃好喝好，快乐不倒',
+            '希望你今天的所有付出都有收获',
+            '愿你被世界温柔以待，好运常伴',
+            '祝你今天元气满满，活力十足',
+            '希望你今天收获很多小惊喜',
+            '愿你所有的烦恼都烟消云散',
+            '祝你今天工作顺利，生活愉快',
+            '希望你想见的人今天就能见到',
+            '愿你今天收获满满的幸福感',
+            '祝你今天财运亨通，好事连连',
+            '希望你今天遇到的问题都能顺利解决',
+            '愿你每天都被幸福和快乐包围',
+            '祝你今天的出行一路顺风，平安顺利',
+            '希望你今天有个超棒的好运气',
+            '愿你今天做什么都顺风顺水'
+        ]
+    };
+    
+    const shownHappiness = {
+        life: new Set(),
+        work: new Set(),
+        heal: new Set(),
+        bless: new Set()
+    };
+    
+    let currentHappinessCategory = 'life';
+    let currentHappiness = '';
+    
+    function getRandomHappiness(category, sentences, shownSet) {
+        const available = sentences.filter(s => !shownSet.has(s));
+        if (available.length === 0) {
+            shownSet.clear();
+            shownHappiness[category] = new Set();
+            available.push(...sentences);
+        }
+        const randomIndex = Math.floor(Math.random() * available.length);
+        const selected = available[randomIndex];
+        shownSet.add(selected);
+        shownHappiness[category] = shownSet;
+        return selected;
+    }
+    
+    function getDailyHappiness(category) {
+        updateHappinessCategoryUI(category);
+        currentHappinessCategory = category;
+        const sentence = getRandomHappiness(category, happinessSentences[category], shownHappiness[category]);
+        displayHappiness(sentence);
+        currentHappiness = sentence;
+    }
+    
+    function refreshHappiness() {
+        getDailyHappiness(currentHappinessCategory);
+    }
+    
+    function displayHappiness(sentence) {
+        const resultEl = document.getElementById('happiness-result');
+        resultEl.textContent = '';
+        resultEl.style.transition = 'opacity 0.2s ease';
+        resultEl.style.opacity = '0';
+        resultEl.textContent = sentence;
+        setTimeout(() => {
+            resultEl.style.opacity = '1';
+        }, 50);
+    }
+    
+    function updateHappinessCategoryUI(category) {
+        const buttons = document.querySelectorAll('#section-dailyHappiness .category-btn');
+        buttons.forEach(btn => {
+            if (btn.dataset.category === category) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+    
+    function copyHappiness() {
+        if (navigator.clipboard && currentHappiness) {
+            navigator.clipboard.writeText(currentHappiness).then(() => {
+                showToast('已复制到剪贴板 ✅');
+            });
+        } else {
+            showToast('复制失败，请手动复制');
+        }
+    }
+    
+    function shareHappiness() {
+        if (!currentHappiness) return;
+        const shareText = currentHappiness + '\n—— 来自「每日小确幸」DeepGreen宇宙科技';
+        if (navigator.share) {
+            navigator.share({ title: '每日小确幸', text: shareText });
+        } else {
+            copyHappiness();
+            showToast('已复制，可以分享给朋友了 ✅');
+        }
+    }
+
     // 初始化
     document.addEventListener('DOMContentLoaded', function() {
         // 设置默认日期
